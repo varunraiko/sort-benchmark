@@ -1,1 +1,11 @@
 mariadb-10.5-mdev6915-ext
+mariadb-10.5-mdev6915-ext-data
+mariadb-10.5
+mariadb-10.5-mdev6915-ext-vars.sh
+my-mariadb-10.5-mdev6915-ext.cnf
+mariadb-10.5-mdev6915-ext-data.clean
+mariadb-10.5-data.clean
+mariadb-10.5-data
+mariadb-10.5-vars.sh
+my-mariadb-10.5.cnf
+mysql-vars.sh
