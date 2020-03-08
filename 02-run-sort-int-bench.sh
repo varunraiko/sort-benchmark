@@ -8,13 +8,18 @@ mkdir $RES
 
 bash filesort-bench1/01-make-sort-int-bench.sh > $RES/sort-int-bench.sql
 
-bash prepare-server.sh -m mariadb-10.5
-source mariadb-10.5-vars.sh
+for SERVER in  mariadb-10.5-mdev6915-ext mariadb-10.5 ; do
+  
+  (cd $SERVER; git log -1) > $RES/tree-$SERVER.txt
 
-$MYSQL $MYSQL_ARGS test < $RES/sort-int-bench.sql | tee $RES/sort-int-mariadb-10.5.txt
+  bash prepare-server.sh -m $SERVER
+  source $SERVER-vars.sh
 
-source mariadb-10.5-mdev6915-ext-vars.sh
-bash prepare-server.sh -m mariadb-10.5-mdev6915-ext
-$MYSQL $MYSQL_ARGS test < $RES/sort-int-bench.sql | tee $RES/sort-int-mariadb-10.5-mdev6915-ext.txt
+  $MYSQL $MYSQL_ARGS test < $RES/sort-int-bench.sql | tee $RES/sort-int-$SERVER.txt
 
+  echo "TEST_RUN:,$SERVER" >> $RES/summary.txt
+  tail -n 10 $RES/sort-int-$SERVER.txt >> $RES/summary.txt
+done
+
+cat $RES/summary.txt
 
