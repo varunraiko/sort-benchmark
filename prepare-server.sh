@@ -12,9 +12,11 @@ echo "  -m - Put datadir on /dev/shm"
 ### Parse options
 ###
 
-while getopts ":pmcd" opt; do
+while getopts ":pmr" opt; do
   case ${opt} in
     m ) USE_RAMDISK=1
+      ;;
+    r ) RECOVER=1
       ;;
     \? ) 
 	usage;
@@ -46,15 +48,20 @@ killall -9 mysqld
 sleep 5
 
 DATA_DIR=$SERVERNAME-data
-rm -rf $DATA_DIR
 
-if [[ $USE_RAMDISK ]] ; then
-  rm -rf /dev/shm/$DATA_DIR
-  cp -r ${DATA_DIR}.clean /dev/shm/$DATA_DIR
-  ln -s /dev/shm/$DATA_DIR $DATA_DIR
+if [[ $RECOVER ]] ; then
+  echo "Recovering the existing datadir" 
 else
-  cp -r ${DATA_DIR}.clean $DATA_DIR
-fi	
+  echo "Initializing new datadir" 
+  rm -rf $DATA_DIR
+  if [[ $USE_RAMDISK ]] ; then
+    rm -rf /dev/shm/$DATA_DIR
+    cp -r ${DATA_DIR}.clean /dev/shm/$DATA_DIR
+    ln -s /dev/shm/$DATA_DIR $DATA_DIR
+  else
+    cp -r ${DATA_DIR}.clean $DATA_DIR
+  fi	
+fi
 
 #exit 0;
 ./$SERVERNAME/sql/mysqld --defaults-file=./my-${SERVERNAME}.cnf & 
