@@ -8,7 +8,7 @@ mkdir $RES
 
 bash filesort-bench1/01-make-sort-int-bench.sh > $RES/sort-int-bench.sql
 
-for SERVER in 10.5-mdev21784-reg1-base 10.5-mdev21784-reg1-vfuncs ; do
+for SERVER in mariadb-10.5-mdev21784-reg1-base mariadb-10.5-mdev21784-reg1-vfuncs ; do
   
   (cd $SERVER; git log -1) > $RES/tree-$SERVER.txt
 
