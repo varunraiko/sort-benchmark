@@ -34,11 +34,12 @@ END
 ###
 
 
-for table_size in 100000 500000 1000000 2000000 4000000 8000000 ; do
+for table_size in 25000 50000 100000 500000 1000000 2000000 4000000  ; do 
+#8000000 ; do
 # 16000000 #32000000
 # if 
 
-for varchar_size in 50 100 150 200 250 ; do
+for varchar_size in 25 50 75 100 125 150 200 255 ; do
 
 rand_table_name="t_rand_${table_size}_${varchar_size}"
 test_table_name="t_char_${table_size}_${varchar_size}"
