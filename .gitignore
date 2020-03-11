@@ -10,3 +10,16 @@ mariadb-10.5-vars.sh
 my-mariadb-10.5.cnf
 mysql-vars.sh
 mariadb-10.4
+10.5-new-data
+10.5-new-data.clean/
+10.5-new
+10.5-old
+10.5-old-data
+10.5-old-data.clean
+10.5-new-vars.sh
+10.5-old-vars.sh
+my-10.5-new.cnf
+my-10.5-old.cnf
+mysql-boost
+mysql-8.0
+mysql8-data
