@@ -4,14 +4,20 @@ set -e
 
 
 if [ "x${1}y" == "xy" ] ; then 
-  echo "Usage: $0 BRANCH_NAME [revision]"
+  echo "Usage: $0 BRANCH_NAME [revision  [directory_name] ]"
   exit 1
 fi
 
 BRANCH="${1}"
 REVISION="${2}"
+DIRNAME="${3}"
+
+if [ "x${DIRNAME}y" == "xy" ] ; then 
+  DIRNAME=mariadb-$BRANCH
+fi
+
 HOMEDIR=`pwd`
-DATADIR="$HOMEDIR/mariadb-$BRANCH-data"
+DATADIR="$HOMEDIR/$DIRNAME-data"
 
 if [ -d $DATADIR ] ; then
   echo "Data directory $DATADIR exists, will not overwrite it "
@@ -20,11 +26,11 @@ if [ -d $DATADIR ] ; then
 fi
 
 # --single-branch
-git clone --branch $BRANCH  https://github.com/MariaDB/server.git mariadb-$BRANCH
+git clone --branch $BRANCH  https://github.com/MariaDB/server.git  $DIRNAME
 
 
 (
-cd mariadb-$BRANCH
+cd $DIRNAME
 
 if [ "x${REVISION}y" != "xy" ] ; then
   git reset --hard $REVISION
@@ -39,7 +45,7 @@ cd ..
 )
 
 (
-  cd mariadb-$BRANCH/mysql-test
+  cd $DIRNAME/mysql-test
   ./mtr alias
   cp -r var/install.db $DATADIR
   cp -r var/install.db $DATADIR.clean
@@ -56,19 +62,18 @@ SOCKETNAME="/tmp/$socket_name"
 # skip-innodb
 # default-tmp-storage-engine=MyISAM
 # skip-slave-start
-# plugin-dir=$HOMEDIR/mariadb-$BRANCH/storage/rocksdb
 # log-bin=pslp
 # binlog-format=row
 
-cat > $HOMEDIR/my-mariadb-$BRANCH.cnf << EOF
+cat > $HOMEDIR/my-$DIRNAME.cnf << EOF
 [mysqld]
 
 bind-address=0.0.0.0
 datadir=$DATADIR
-plugin-dir=$HOMEDIR/mariadb-$BRANCH/mysql-test/var/plugins
+plugin-dir=$HOMEDIR/$DIRNAME/mysql-test/var/plugins
 
 log-error
-lc_messages_dir=$HOMEDIR/mariadb-$BRANCH/sql/share
+lc_messages_dir=$HOMEDIR/$DIRNAME/sql/share
 
 tmpdir=/tmp
 port=3341
@@ -81,19 +86,19 @@ innodb_buffer_pool_size=8G
 EOF
 
 cat > mysql-vars.sh <<EOF
-MYSQL="`pwd`/mariadb-$BRANCH/client/mysql"
-MYSQLSLAP="`pwd`/mariadb-$BRANCH/client/mysqlslap"
+MYSQL="`pwd`/$DIRNAME/client/mysql"
+MYSQLSLAP="`pwd`/$DIRNAME/client/mysqlslap"
 MYSQL_SOCKET="--socket=$SOCKETNAME"
 MYSQL_USER="-uroot"
 MYSQL_ARGS="\$MYSQL_USER \$MYSQL_SOCKET"
 EOF
 
 source mysql-vars.sh
-cp mysql-vars.sh mariadb-$BRANCH-vars.sh
+cp mysql-vars.sh $DIRNAME-vars.sh
 
 (
-cd $HOMEDIR/mariadb-$BRANCH/sql
-../sql/mysqld --defaults-file=$HOMEDIR/my-mariadb-$BRANCH.cnf &
+cd $HOMEDIR/$DIRNAME/sql
+../sql/mysqld --defaults-file=$HOMEDIR/my-$DIRNAME.cnf &
 )
 
 
