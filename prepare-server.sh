@@ -38,6 +38,11 @@ if [ ! -d $SERVERNAME ]; then
   exit 1
 fi
 
+if [ ! -f $SERVERNAME-vars.sh ]; then 
+  echo "Can't find settings file $SERVERNAME-vars.sh."
+  exit 1
+fi
+
 if [[ $USE_RAMDISK ]] ; then
   echo " Using /dev/shm for data dir"
 fi
@@ -48,6 +53,8 @@ killall -9 mysqld
 sleep 5
 
 DATA_DIR=$SERVERNAME-data
+
+source ${SERVERNAME}-vars.sh
 
 if [[ $RECOVER ]] ; then
   echo "Recovering the existing datadir" 
@@ -64,7 +71,7 @@ else
 fi
 
 #exit 0;
-./$SERVERNAME/sql/mysqld --defaults-file=./my-${SERVERNAME}.cnf & 
+$MYSQLD --defaults-file=./my-${SERVERNAME}.cnf & 
 
 
 server_attempts=0
@@ -72,7 +79,7 @@ server_attempts=0
 while true ; do
   client_attempts=0
   while true ; do
-    ./$SERVERNAME/client/mysql --defaults-file=./my-${SERVERNAME}.cnf -uroot -e "create database sbtest"
+    $MYSQL $MYSQL_ARGS -e "select 1"
 
     if [ $? -eq 0 ]; then
       break

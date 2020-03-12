@@ -85,16 +85,16 @@ innodb_buffer_pool_size=8G
 
 EOF
 
-cat > mysql-vars.sh <<EOF
+cat > $DIRNAME-vars.sh <<EOF
 MYSQL="`pwd`/$DIRNAME/client/mysql"
+MYSQLD="`pwd`/$DIRNAME/sql/mysqld"
 MYSQLSLAP="`pwd`/$DIRNAME/client/mysqlslap"
 MYSQL_SOCKET="--socket=$SOCKETNAME"
 MYSQL_USER="-uroot"
 MYSQL_ARGS="\$MYSQL_USER \$MYSQL_SOCKET"
 EOF
 
-source mysql-vars.sh
-cp mysql-vars.sh $DIRNAME-vars.sh
+source $DIRNAME-vars.sh
 
 (
 cd $HOMEDIR/$DIRNAME/sql

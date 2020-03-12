@@ -29,6 +29,17 @@ create table test_run_queries (
   test_time_ms bigint,
   sort_merge_passes int
 );
+
+drop view if exists session_status;
+
+set @var= IF(version() like '%8.0%', 
+            'create view session_status as select * from performance_schema.session_status', 
+            'create view session_status as select * from information_schema.session_status');
+
+prepare s from @var;
+execute s;
+
+
 END
 
 ###
@@ -55,7 +66,18 @@ create table $test_table_name (
   char_field varchar($varchar_size) character set utf8, b int
 ) engine=myisam;
 
-insert into $rand_table_name select 1+floor(rand() * @n_countries) from seq_1_to_$table_size;
+drop table if exists ten, one_k;
+create table ten(a int);
+insert into ten values (0),(1),(2),(3),(4),(5),(6),(7),(8),(9);
+
+create table one_k(a int);
+insert into one_k select A.a + B.a* 10 + C.a * 100 from ten A, ten B, ten C;
+
+set @a=0;
+insert into $rand_table_name 
+select 1+floor(rand() * @n_countries) 
+from 
+  (select @a:=@a+1 from one_k A, one_k B, one_k C limit $table_size) T;
 insert into $test_table_name
 select
   (select Name from Country where id=T.a), 1234
@@ -63,13 +85,15 @@ from $rand_table_name T ;
 
 drop table $rand_table_name;
 analyze table $test_table_name;
+select count(*) from $test_table_name;
+show create table $test_table_name;
 END
 
 for i in 1 2 3 4 5 6 7 8 9 10 ; do
 
 ### query_start.sql here:
 cat <<END
-select variable_value into @query_start_smp from information_schema.session_status where variable_name like 'sort_merge_passes';
+select variable_value into @query_start_smp from session_status where variable_name like 'sort_merge_passes';
 select current_timestamp(6) into @query_start_time;
 END
 ###
@@ -87,7 +111,7 @@ echo $QUERY
 cat << END
 set @test_name='$TEST_NAME';
 set @query_time_ms= timestampdiff(microsecond, @query_start_time, current_timestamp(6))/1000;
-select variable_value into @query_end_smp from information_schema.session_status where variable_name like 'sort_merge_passes';
+select variable_value into @query_end_smp from session_status where variable_name like 'sort_merge_passes';
 set @query_merge_passes = @query_end_smp - @query_start_smp;
 insert into test_run_queries
          (table_size, varchar_size, test_ts, test_time_ms, sort_merge_passes)
