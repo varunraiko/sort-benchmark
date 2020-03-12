@@ -24,3 +24,7 @@ mysql-boost
 mysql-8.0
 mysql8-data
 mysql-8.0-data.clean/
+my-mariadb-10.4.cnf
+my-mysql-8.0.cnf
+mysql-8.0-data
+mysql-8.0-vars.sh
