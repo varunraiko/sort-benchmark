@@ -28,3 +28,8 @@ my-mariadb-10.4.cnf
 my-mysql-8.0.cnf
 mysql-8.0-data
 mysql-8.0-vars.sh
+10.5-memcmp
+10.5-memcmp-data
+10.5-memcmp-data.clean
+10.5-memcmp-vars.sh
+my-10.5-memcmp.cnf
