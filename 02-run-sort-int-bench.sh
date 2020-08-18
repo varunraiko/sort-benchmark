@@ -6,9 +6,15 @@ RES='result-sort-int'
 
 mkdir $RES
 
-bash filesort-bench1/01-make-sort-int-bench.sh > $RES/sort-int-bench.sql
+#
+# $1 here is the benchmark you want to run
+# 1) eits with packing   =>  pass eits
+# 2) count(distinct col) =>  pass count_distinct
+#
 
-for SERVER in  mariadb-10.5-mdev6915-ext mariadb-10.5 ; do
+bash filesort-bench1/$1/01-make-sort-int-bench.sh > $RES/sort-int-bench.sql
+
+for SERVER in  mariadb-10.5 mariadb-10.5-mdev21829 ; do
   
   (cd $SERVER; git log -1) > $RES/tree-$SERVER.txt
 
