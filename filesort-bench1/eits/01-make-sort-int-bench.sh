@@ -60,9 +60,7 @@ END
 
 TEST_NAME="sort-int-limit-$size"
 
-QUERY="ANALYZE TABLE t_int_$size PERSISTENT FOR ALL"
-#select a, b from t_int_$size order by a limit 100;
-#select a, count(distinct b) from t_int_$size group by a;
+QUERY="ANALYZE TABLE t_int_$size PERSISTENT FOR ALL;"
 
 echo $QUERY
 
