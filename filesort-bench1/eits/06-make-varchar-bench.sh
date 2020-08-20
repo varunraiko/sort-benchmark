@@ -46,7 +46,7 @@ END
 ###
 
 
-for table_size in 25000 50000 ; do
+for table_size in 25000 50000 100000 500000 1000000 2000000 4000000; do
 #8000000 ; do
 # 16000000 #32000000
 # if
@@ -135,13 +135,4 @@ END
 done
 
 done
-
-cat <<END
-select '${QUERY/'/\\'}';
-select test_name,test_time_ms,sort_merge_passes from test_runs;
-select concat(test_name, ',',
-              test_time_ms, ',',
-              sort_merge_passes)
-from test_runs;
-END
 
