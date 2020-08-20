@@ -39,6 +39,7 @@ set @var= IF(version() like '%8.0%',
 prepare s from @var;
 execute s;
 
+set @@RAND_SEED1=810763568, @@RAND_SEED2=600681772;
 
 END
 

@@ -6,9 +6,9 @@ RES='result-varchars'
 
 mkdir $RES
 
-bash filesort-bench1/06-make-varchar-bench.sh > $RES/varchar-bench.sql
+bash filesort-bench1/$1/06-make-varchar-bench.sh > $RES/varchar-bench.sql
 
-for SERVER in  mariadb-10.5-mdev6915-ext mariadb-10.5 ; do
+for SERVER in  mariadb-10.5-mdev21829 mariadb-10.5 ; do
   
   (cd $SERVER; git log -1) > $RES/tree-$SERVER.txt
 
