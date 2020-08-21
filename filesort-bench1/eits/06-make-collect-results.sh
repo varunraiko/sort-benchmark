@@ -67,7 +67,7 @@ for varchar_size in $VARCHAR_SIZES ; do
   query_str="$query_str passes${varchar_size},',',  "
 done
 
-heading="$heading' as Z;"
+heading="$heading' as H;"
 query_str="$query_str 0) as H from rep_by_vcsize;"
 
 echo $heading

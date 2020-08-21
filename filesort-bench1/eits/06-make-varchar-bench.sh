@@ -94,7 +94,7 @@ for i in 1 2 3 4 5 6 7 8 9 10 ; do
 
 ### query_start.sql here:
 cat <<END
-select variable_value into @query_start_smp from session_status where variable_name like 'sort_merge_passes';
+select variable_value into @query_start_smp from session_status where variable_name like 'unique_flushes';
 select current_timestamp(6) into @query_start_time;
 END
 ###
@@ -112,7 +112,7 @@ echo $QUERY
 cat << END
 set @test_name='$TEST_NAME';
 set @query_time_ms= timestampdiff(microsecond, @query_start_time, current_timestamp(6))/1000;
-select variable_value into @query_end_smp from session_status where variable_name like 'sort_merge_passes';
+select variable_value into @query_end_smp from session_status where variable_name like 'unique_flushes';
 set @query_merge_passes = @query_end_smp - @query_start_smp;
 insert into test_run_queries
          (table_size, varchar_size, test_ts, test_time_ms, sort_merge_passes)
