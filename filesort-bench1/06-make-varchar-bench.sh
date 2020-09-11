@@ -39,7 +39,7 @@ set @var= IF(version() like '%8.0%',
 prepare s from @var;
 execute s;
 
-set @@RAND_SEED1=810763568, @@RAND_SEED2=600681772;
+
 
 END
 
@@ -58,7 +58,7 @@ test_table_name="t_char_${table_size}_${varchar_size}"
 
 cat <<END
 set @n_countries=(select count(*) from Country) - 1;
-
+set @@RAND_SEED1=810763568, @@RAND_SEED2=600681772;
 drop table if exists $rand_table_name;
 create table $rand_table_name (a int) engine=myisam;
 

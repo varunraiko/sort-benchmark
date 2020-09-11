@@ -35,6 +35,7 @@ for size in 100000 500000 1000000 2000000 4000000 8000000 16000000 32000000; do
 
 cat <<END
 drop table if exists t_int_$size;
+set @@RAND_SEED1=810763568, @@RAND_SEED2=600681772;
 create table t_int_$size (
   a int, b int
 ) engine=myisam;
@@ -60,7 +61,7 @@ END
 
 TEST_NAME="sort-int-limit-$size"
 
-QUERY="ANALYZE TABLE t_int_$size PERSISTENT FOR ALL;"
+QUERY="SELECT COUNT(DISTINCT a) FROM t_int_$size;"
 
 echo $QUERY
 

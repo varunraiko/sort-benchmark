@@ -39,8 +39,6 @@ set @var= IF(version() like '%8.0%',
 prepare s from @var;
 execute s;
 
-set @@RAND_SEED1=810763568, @@RAND_SEED2=600681772;
-
 END
 
 ###
@@ -57,6 +55,7 @@ rand_table_name="t_rand_${table_size}_${varchar_size}"
 test_table_name="t_char_${table_size}_${varchar_size}"
 
 cat <<END
+set @@RAND_SEED1=810763568, @@RAND_SEED2=600681772;
 set @n_countries=(select count(*) from t1) - 1;
 
 drop table if exists $rand_table_name;
